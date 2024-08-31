@@ -2,7 +2,7 @@
 pragma solidity >=0.7.5;
 pragma abicoder v2;
 
-interface IQuickswapRouter {
+interface IUniswapV2 {
     function swapExactTokensForTokens(
         uint256 amountIn,
         uint256 amountOutMin,

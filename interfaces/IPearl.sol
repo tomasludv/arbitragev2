@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-interface IPearlRouter {
+interface IPearl {
     function swapExactTokensForTokensSimple(
         uint256 amountIn,
         uint256 amountOutMin,

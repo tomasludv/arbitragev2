@@ -5,7 +5,7 @@ pragma solidity >=0.7.5;
 
 /// @title Router token swapping functionality
 /// @notice Functions for swapping tokens via Uniswap V3
-interface IUniswapRouter {
+interface IUniswapV3 {
     struct ExactInputSingleParams {
         address tokenIn;
         address tokenOut;
