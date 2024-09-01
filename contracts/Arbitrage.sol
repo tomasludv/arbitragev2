@@ -23,7 +23,8 @@ enum Action {
     KYBERSWAP,
     SUSHISWAPV2,
     WRAPUSDR,
-    UNWRAPWUSDR
+    UNWRAPWUSDR,
+    MANTIS
 }
 
 contract Arbitrage is Ownable {
