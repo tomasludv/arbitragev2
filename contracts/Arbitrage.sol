@@ -5,6 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IUniswapV2} from "../interfaces/IUniswapV2.sol";
 import {IUniswapV3} from "../interfaces/IUniswapV3.sol";
+import {IQuickswapV3} from "../interfaces/IQuickswapV3.sol";
 import {IPearl} from "../interfaces/IPearl.sol";
 import {IKyberswap} from "../interfaces/IKyberswap.sol";
 
@@ -156,13 +157,12 @@ contract Arbitrage is Ownable {
     }
 
     function quickswapV3(uint256 amountIn, bytes memory data) internal returns (uint256 amountOut) {
-        (, , address tokenIn, address tokenOut, uint24 fee) = abi.decode(data, (bytes, Action, address, address, uint24));
+        (, , address tokenIn, address tokenOut) = abi.decode(data, (bytes, Action, address, address));
         IERC20(tokenIn).approve(0xf5b509bB0909a69B1c207E495f687a596C168E12, amountIn);
-        amountOut = IUniswapV3(0xf5b509bB0909a69B1c207E495f687a596C168E12).exactInputSingle(
-            IUniswapV3.ExactInputSingleParams({
+        amountOut = IQuickswapV3(0xf5b509bB0909a69B1c207E495f687a596C168E12).exactInputSingle(
+            IQuickswapV3.ExactInputSingleParams({
                 tokenIn: tokenIn,
                 tokenOut: tokenOut,
-                fee: fee,
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: amountIn,
