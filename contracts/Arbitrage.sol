@@ -23,7 +23,8 @@ enum Action {
     KYBERSWAP,
     SUSHISWAPV2,
     WRAPUSDR,
-    UNWRAPWUSDR
+    UNWRAPWUSDR,
+    MANTIS
 }
 
 contract Arbitrage is Ownable {
@@ -41,7 +42,7 @@ contract Arbitrage is Ownable {
         bytes memory data
     ) external onlyOwner returns (uint256 amountOut) {
         IERC20(tokenIn).transferFrom(msg.sender, address(this), amountIn);
-
+/*4654654*/
         amountOut = amountIn;
 
         while (data.length > 0) {
