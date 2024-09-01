@@ -8,6 +8,7 @@ import {IUniswapV3} from "../interfaces/IUniswapV3.sol";
 import {IQuickswapV3} from "../interfaces/IQuickswapV3.sol";
 import {IPearl} from "../interfaces/IPearl.sol";
 import {IKyberswap} from "../interfaces/IKyberswap.sol";
+import {IWUSDR} from "../interfaces/IWUSDR.sol";
 
 error InvalidAction(Action action);
 error AmountOutMinNotReached(uint256 amountOut, uint256 amountOutMin);
@@ -20,7 +21,9 @@ enum Action {
     QUICKSWAPV3,
     RETRO,
     KYBERSWAP,
-    SUSHISWAPV2
+    SUSHISWAPV2,
+    WRAPUSDR,
+    UNWRAPWUSDR
 }
 
 contract Arbitrage is Ownable {
@@ -43,6 +46,7 @@ contract Arbitrage is Ownable {
 
         while (data.length > 0) {
             (, Action action) = abi.decode(data, (bytes, Action));
+            
             if (action == Action.UNISWAPV2) {
                 amountOut = uniswapV2(amountOut, data);
             } else if (action == Action.UNISWAPV3) {
@@ -59,6 +63,10 @@ contract Arbitrage is Ownable {
                 amountOut = kyberswap(amountOut, data);
             } else if (action == Action.SUSHISWAPV2) {
                 amountOut = sushiswapV2(amountOut, data);
+            } else if (action == Action.WRAPUSDR) {
+                amountOut = wrapUsdr(amountOut);
+            } else if (action == Action.UNWRAPWUSDR) {
+                amountOut = unwrapWusdr(amountOut);
             } else {
                 revert InvalidAction(action);
             }
@@ -201,5 +209,15 @@ contract Arbitrage is Ownable {
             deadline: block.timestamp
         });
         amountOut = amounts[amounts.length - 1];
+    }
+
+    function wrapUsdr(uint256 amountIn) internal returns (uint256 amountOut) {
+        IERC20(0x40379a439D4F6795B6fc9aa5687dB461677A2dBa).approve(0x00e8c0E92eB3Ad88189E7125Ec8825eDc03Ab265, amountIn);
+        amountOut = IWUSDR(0x00e8c0E92eB3Ad88189E7125Ec8825eDc03Ab265).deposit(amountIn, address(this));
+    }
+
+    function unwrapWusdr(uint256 amountIn) internal returns (uint256 amountOut) {
+        IERC20(0x00e8c0E92eB3Ad88189E7125Ec8825eDc03Ab265).approve(0x00e8c0E92eB3Ad88189E7125Ec8825eDc03Ab265, amountIn);
+        amountOut = IWUSDR(0x00e8c0E92eB3Ad88189E7125Ec8825eDc03Ab265).redeem(amountIn, address(this), address(this));
     }
 }
